@@ -1,0 +1,23 @@
+when:
+  - event: [push, pull_request, manual]
+
+steps:
+  - name: install
+    image: node:22-alpine
+    commands:
+      - npm ci
+
+  - name: test
+    image: node:22-alpine
+    commands:
+      - npm test
+
+  - name: build
+    image: node:22-alpine
+    commands:
+      - npm run build
+
+  - name: docker-build
+    image: gcr.io/kaniko-project/executor:v1.23.2-debug
+    commands:
+      - /kaniko/executor --context=dir://$CI_WORKSPACE --dockerfile=Dockerfile --no-push
